@@ -1,0 +1,8 @@
+<mat-toolbar color="primary">
+  <span class="left-spacer">LED Control</span>
+  <span class="left-spacer"></span>
+  <mat-icon matTooltip="Connected" *ngIf="isConnected">wifi</mat-icon>
+  <mat-icon matTooltip="No connection" *ngIf="!isConnected">wifi_off</mat-icon>
+  <span class="left-spacer"></span>
+  <span>{{subTitle}}</span>
+</mat-toolbar>
