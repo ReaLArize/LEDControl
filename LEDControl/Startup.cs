@@ -1,20 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using LEDControl.Database;
 using LEDControl.Hubs;
 using LEDControl.Services;
 using LEDControl.Services.Mqtt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace LEDControl
@@ -40,7 +34,7 @@ namespace LEDControl
             services.AddSignalR();
 
             services.AddDbContext<DataContext>(options => 
-                options.UseMySql("server=192.168.178.8;user=led;password=Menschen7;database=LEDControl", 
+                options.UseMySql(Configuration["ConnectionString"], 
                     new MariaDbServerVersion(new Version(10, 5, 12))));
 
             services.AddMqttService(options =>
@@ -57,6 +51,13 @@ namespace LEDControl
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MqttService mqttService)
         {
+            var baseUrl = Configuration["BaseUrl"];
+            if (!string.IsNullOrEmpty(baseUrl))
+            {
+                baseUrl = baseUrl.Trim('/');
+                app.UsePathBase("/" + baseUrl);
+            }
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,13 +1,29 @@
 <mat-list>
-  <div mat-subheader>Devices</div>
-  <mat-list-item>
-    <mat-icon mat-list-icon>devices</mat-icon>
-    <div mat-line>Test1</div>
-    <mat-button-toggle-group style="">
-      <mat-button-toggle value="red">Red</mat-button-toggle>
-      <mat-button-toggle value="green">Green</mat-button-toggle>
-      <mat-button-toggle value="blue">Blue</mat-button-toggle>
-    </mat-button-toggle-group>
-  </mat-list-item>
-  <mat-divider></mat-divider>
+  <div mat-subheader>
+    <span>Devices</span>
+    <span class="spacer"></span>
+    <button matTooltip="Add" mat-icon-button (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button matTooltip="Refresh" mat-icon-button (click)="loadDevices()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="devices.length > 0">
+    <mat-list-item *ngFor="let device of devices">
+      <mat-icon mat-list-icon>devices</mat-icon>
+      <div mat-line>{{device.name}}</div>
+      <mat-button-toggle-group [(ngModel)]="device.mode">
+        <mat-button-toggle [value]="0">Light</mat-button-toggle>
+        <mat-button-toggle [value]="1">Pictures</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button matTooltip="Delete" mat-icon-button (click)="deleteDevice(device.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+  </div>
+
+  <div mat-subheader *ngIf="devices.length == 0">No devices found...</div>
 </mat-list>

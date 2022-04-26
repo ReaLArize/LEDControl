@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>New Device</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="device.name">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Mode</mat-label>
+    <mat-select [(ngModel)]="device.mode">
+      <mat-option [value]="0">Light</mat-option>
+      <mat-option [value]="1">Pictures</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Hostname</mat-label>
+    <input matInput [(ngModel)]="device.hostname">
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Port</mat-label>
+    <input matInput type="number" [(ngModel)]="device.port">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions style="justify-content: flex-end">
+  <button mat-raised-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="device" cdkFocusInitial color="primary">Create</button>
+</div>

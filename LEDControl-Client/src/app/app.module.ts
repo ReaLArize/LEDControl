@@ -18,6 +18,12 @@ import {LayoutModule} from "@angular/cdk/layout";
 import { ConverterComponent } from './converter/converter.component';
 import { SettingsComponent } from './settings/settings.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {FormsModule} from "@angular/forms";
+import { AddDeviceComponent } from './settings/add-device/add-device.component';
+import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {MatInputModule} from "@angular/material/input";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatSelectModule} from "@angular/material/select";
 
 @NgModule({
   declarations: [
@@ -26,6 +32,7 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     ToolbarComponent,
     ConverterComponent,
     SettingsComponent,
+    AddDeviceComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +47,12 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     MatTooltipModule,
     MatListModule,
     LayoutModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    FormsModule,
+    HttpClientModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

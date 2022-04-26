@@ -1,6 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {EventService} from "../services/event.service";
-import {DeviceMode, DeviceSettings} from "../models/device-settings";
+import {Device} from "../models/device";
+import {DeviceService} from "../services/device.service";
+import {AddDeviceComponent} from "./add-device/add-device.component";
+import {MatDialog} from "@angular/material/dialog";
+import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'app-settings',
@@ -9,34 +13,46 @@ import {DeviceMode, DeviceSettings} from "../models/device-settings";
 })
 export class SettingsComponent implements OnInit {
 
-  devices: DeviceSettings[] = [];
+  devices: Device[] = [];
 
-  constructor(private eventService: EventService) {
+  constructor(private eventService: EventService, private deviceService: DeviceService,
+              public dialog: MatDialog, private notiService: NotificationService) {
     this.eventService.subTitle.next("Settings");
   }
 
-  ngOnInit(): void {
-    let device: DeviceSettings =
-      {
-        Id: "1",
-        Name: "Test 1",
-        Mode: DeviceMode.Light
-      };
-
-    let device2: DeviceSettings =
-      {
-        Id: "2",
-        Name: "Test 2",
-        Mode: DeviceMode.EQ
-      };
-
-    let device3: DeviceSettings =
-      {
-        Id: "3",
-        Name: "Test 3",
-        Mode: DeviceMode.Pictures
-      };
-    this.devices.push(device, device2, device3);
+  async ngOnInit() {
+    await this.loadDevices();
   }
 
+  openAddDialog(){
+    const dialogRef = this.dialog.open(AddDeviceComponent, {
+      width: '350px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.deviceService.addDevice(result).then(() => {
+          this.loadDevices();
+          this.notiService.showMessage("Device successfully created!")
+        }).catch(err => {
+          console.error(err);
+          this.notiService.showMessage("Error while creating the device!");
+        });
+      }
+    });
+  }
+
+  async loadDevices(){
+    this.devices = await this.deviceService.getDevices();
+  }
+
+  async deleteDevice(deviceId: string){
+    this.deviceService.deleteDevice(deviceId).then(() => {
+      this.loadDevices();
+      this.notiService.showMessage("Device successfully deleted!");
+    }).catch(err =>{
+      console.error(err);
+      this.notiService.showMessage("Error while deleting the device!");
+    });
+  }
 }
