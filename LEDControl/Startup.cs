@@ -44,8 +44,7 @@ namespace LEDControl
             
             services.AddSingleton<ProgramService>();
             services.AddSingleton<SettingsService>();
-            services.AddSingleton<ConvertService>();
-            services.AddHostedService(provider => provider.GetService<ConvertService>());
+            services.AddHostedService<ConvertService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,7 +68,7 @@ namespace LEDControl
 
             app.UseCors(options =>
             {
-                options.WithOrigins("http://localhost:4200")
+                options.WithOrigins("http://localhost:4200", "http://localhost:5000")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -83,6 +82,7 @@ namespace LEDControl
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<LightHub>("hubs/light");
+                endpoints.MapHub<ConvertHub>("hubs/convert");
                 endpoints.MapControllers();
             });
         }

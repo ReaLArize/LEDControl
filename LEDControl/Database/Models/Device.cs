@@ -5,6 +5,7 @@ namespace LEDControl.Database.Models;
 
 public class Device
 {
+    [Key]
     public Guid Id { get; set; }
     
     [MaxLength(128)]
