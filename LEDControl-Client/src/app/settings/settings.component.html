@@ -10,8 +10,10 @@
     </button>
   </div>
 
-  <div *ngIf="devices.length > 0">
-    <mat-list-item *ngFor="let device of devices">
+  <mat-divider></mat-divider>
+
+  <div *ngFor="let device of devices">
+    <mat-list-item>
       <mat-icon mat-list-icon>devices</mat-icon>
       <div mat-line>{{device.name}}</div>
       <mat-button-toggle-group [(ngModel)]="device.mode">

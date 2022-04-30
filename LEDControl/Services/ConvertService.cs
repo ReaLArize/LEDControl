@@ -133,6 +133,7 @@ public class ConvertService : BackgroundService
                 video.ConvertStatus = ConvertStatus.Failed;
                 video.Hint = ex.Message;
                 await dataContext.SaveChangesAsync();
+                await _hubContext.Clients.All.SendAsync("Update", video);
             }
         }
 

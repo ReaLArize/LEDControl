@@ -25,6 +25,8 @@ import {MatInputModule} from "@angular/material/input";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatSelectModule} from "@angular/material/select";
 import { MusicComponent } from './music/music.component';
+import { AddVideoComponent } from './converter/add-video/add-video.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { MusicComponent } from './music/music.component';
     SettingsComponent,
     AddDeviceComponent,
     MusicComponent,
+    AddVideoComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ import { MusicComponent } from './music/music.component';
     HttpClientModule,
     MatInputModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

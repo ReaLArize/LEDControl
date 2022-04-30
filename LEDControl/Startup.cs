@@ -71,7 +71,6 @@ namespace LEDControl
             app.UseRouting();
 
             app.UseAuthorization();
-
             
             app.UseEndpoints(endpoints =>
             {

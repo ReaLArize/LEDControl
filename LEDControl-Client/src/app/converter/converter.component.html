@@ -1,32 +1,8 @@
-<div style="margin: 2rem">
-  <mat-form-field appearance="outline">
-    <mat-label>Youtube Link</mat-label>
-    <input [(ngModel)]="link" matInput placeholder="Video URL">
-  </mat-form-field>
-
-  <mat-form-field style="margin-left: 1rem" appearance="outline">
-    <mat-label>Conversion Preset</mat-label>
-    <mat-select [(ngModel)]="conversionPreset">
-      <mat-option [value]="0">Very Slow</mat-option>
-      <mat-option [value]="1">Slower</mat-option>
-      <mat-option [value]="2">Slow</mat-option>
-      <mat-option [value]="3">Medium</mat-option>
-      <mat-option [value]="4">Fast</mat-option>
-      <mat-option [value]="5">Faster</mat-option>
-      <mat-option [value]="6">Very Fast</mat-option>
-      <mat-option [value]="7">Super Fast</mat-option>
-      <mat-option [value]="8">Ultra Fast</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <button (click)="convertVideo()" style="margin-left: 1rem" mat-raised-button color="primary">Convert</button>
-</div>
-
 <mat-list>
   <div mat-subheader>
     <span>Videos</span>
     <span class="spacer"></span>
-    <button matTooltip="Add" mat-icon-button>
+    <button (click)="openAddDialog()" matTooltip="Add" mat-icon-button>
       <mat-icon>add</mat-icon>
     </button>
     <button (click)="loadVideos()" matTooltip="Refresh" mat-icon-button>
@@ -34,11 +10,19 @@
     </button>
   </div>
 
-  <div *ngIf="videos.length > 0">
-    <mat-list-item *ngFor="let video of videos">
+  <mat-divider></mat-divider>
+
+  <div *ngFor="let video of videos">
+    <mat-list-item>
       <mat-icon mat-list-icon>movie</mat-icon>
       <div mat-line>{{video.title}}</div>
+      <button [matTooltip]="video.hint" mat-raised-button [disabled]="video.convertStatus < 2"
+              [color]="video.convertStatus == 3 ? 'warn' : 'primary'">
+        {{video.convertStatus == 3 ? 'Error' : 'Download'}}
+      </button>
     </mat-list-item>
+    <mat-progress-bar *ngIf="video.convertStatus < 2" [value]="video.downloadProgress / 2 + video.convertProgress / 2"
+                      [mode]="video.convertStatus == 1 ? 'determinate' : 'indeterminate'"></mat-progress-bar>
     <mat-divider></mat-divider>
   </div>
 

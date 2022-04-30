@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>New Device</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="outline">
+    <mat-label>Youtube Link</mat-label>
+    <input [(ngModel)]="video.link" matInput placeholder="Video URL">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Conversion Preset</mat-label>
+    <mat-select [(ngModel)]="video.conversionPreset">
+      <mat-option [value]="0">Very Slow</mat-option>
+      <mat-option [value]="1">Slower</mat-option>
+      <mat-option [value]="2">Slow</mat-option>
+      <mat-option [value]="3">Medium</mat-option>
+      <mat-option [value]="4">Fast</mat-option>
+      <mat-option [value]="5">Faster</mat-option>
+      <mat-option [value]="6">Very Fast</mat-option>
+      <mat-option [value]="7">Super Fast</mat-option>
+      <mat-option [value]="8">Ultra Fast</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions style="justify-content: flex-end">
+  <button mat-raised-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="video" cdkFocusInitial color="primary">Convert</button>
+</div>
