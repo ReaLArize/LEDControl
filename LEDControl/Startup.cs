@@ -58,20 +58,15 @@ namespace LEDControl
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LEDControl v1"));
             }
 
-            //app.UseHttpsRedirection();
-
-            app.UseCors(options =>
-            {
-                options.WithOrigins("http://localhost:4200", "http://localhost:5000")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
+            app.UseCors(p => p
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials()
+            );
 
             app.UseRouting();
 
-            app.UseAuthorization();
-            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<LightHub>("hubs/light");

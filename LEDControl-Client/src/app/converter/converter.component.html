@@ -16,7 +16,8 @@
     <mat-list-item>
       <mat-icon mat-list-icon>movie</mat-icon>
       <div mat-line>{{video.title}}</div>
-      <button [matTooltip]="video.hint" mat-raised-button [disabled]="video.convertStatus < 2"
+      <a mat-raised-button [href]="video.link" target="_blank" style="margin-right: 1rem">YouTube</a>
+      <button (click)="downloadVideo(video)" [matTooltip]="video.hint" mat-raised-button [disabled]="video.convertStatus < 2"
               [color]="video.convertStatus == 3 ? 'warn' : 'primary'">
         {{video.convertStatus == 3 ? 'Error' : 'Download'}}
       </button>

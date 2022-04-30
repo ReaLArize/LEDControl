@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {firstValueFrom} from "rxjs";
 import {environment} from "../../environments/environment";
 import {ConvertVideo} from "../models/convert-video";
-import {Device} from "../models/device";
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -18,5 +18,9 @@ export class ConvertService {
 
   getVideos(): Promise<ConvertVideo[]>{
     return firstValueFrom(this.httpClient.get<ConvertVideo[]>(environment.url  + "/convert/"));
+  }
+
+  downloadVideo(video: ConvertVideo){
+    saveAs(environment.url  + "/convert/" + video.id + "/download", video.title + ".mp3");
   }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LEDControl.Database;
@@ -54,5 +55,25 @@ public class ConvertController : ControllerBase
     public async Task<IActionResult> GetVideos()
     {
         return Ok(await _dataContext.Videos.OrderByDescending(p => p.Created).ToListAsync());
+    }
+    
+    [HttpGet("{id:guid}/download")]
+    public async Task<IActionResult> Download(Guid id)
+    {
+        var track = _dataContext.Videos.FirstOrDefault(p => p.Id == id);
+        if (track == null) 
+            return BadRequest();
+        
+        var dir = new DirectoryInfo("./temp");
+        if (!dir.Exists)
+            return NotFound();
+        var filePath = Path.Combine(dir.FullName + track.Id + ".mp3");
+        if (!System.IO.File.Exists(filePath))
+            return NotFound();
+
+        return new FileContentResult(await System.IO.File.ReadAllBytesAsync(filePath), "audio/mpeg")
+        {
+            FileDownloadName = track.Title + ".mp3"
+        };
     }
 }

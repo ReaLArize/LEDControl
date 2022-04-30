@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EventService} from "../services/event.service";
-import {ConversionPreset, ConvertVideo} from "../models/convert-video";
+import {ConvertStatus, ConvertVideo} from "../models/convert-video";
 import {ConvertService} from "../services/convert.service";
 import {NotificationService} from "../services/notification.service";
 import {MatDialog} from "@angular/material/dialog";
@@ -87,7 +87,6 @@ export class ConverterComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       if(result){
         this.convertService.convertVideo(result).then(() => {
         }).catch(err => {
@@ -96,6 +95,12 @@ export class ConverterComponent implements OnInit {
         });
       }
     });
+  }
+
+  downloadVideo(video: ConvertVideo){
+    if(video.convertStatus == ConvertStatus.Done){
+      this.convertService.downloadVideo(video);
+    }
   }
 
 }
