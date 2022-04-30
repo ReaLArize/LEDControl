@@ -24,6 +24,7 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {MatInputModule} from "@angular/material/input";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatSelectModule} from "@angular/material/select";
+import { MusicComponent } from './music/music.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {MatSelectModule} from "@angular/material/select";
     ConverterComponent,
     SettingsComponent,
     AddDeviceComponent,
+    MusicComponent,
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,6 @@ using System;
 using LEDControl.Database;
 using LEDControl.Hubs;
 using LEDControl.Services;
-using LEDControl.Services.Mqtt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -37,18 +36,13 @@ namespace LEDControl
                 options.UseMySql(Configuration["ConnectionString"], 
                     new MariaDbServerVersion(new Version(10, 5, 12))));
 
-            services.AddMqttService(options =>
-            {
-                options.Port = 12000;
-            });
-            
             services.AddSingleton<ProgramService>();
             services.AddSingleton<SettingsService>();
             services.AddHostedService<ConvertService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, MqttService mqttService)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var baseUrl = Configuration["BaseUrl"];
             if (!string.IsNullOrEmpty(baseUrl))

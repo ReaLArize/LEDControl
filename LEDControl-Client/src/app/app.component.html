@@ -9,6 +9,11 @@
         <mat-icon [class]="isMobileLayout ? '' : 'spacer-left'">home</mat-icon>
       </mat-list-item>
 
+      <mat-list-item routerLink="/music">
+        <a matLine *ngIf="!isMobileLayout">Music</a>
+        <mat-icon [class]="isMobileLayout ? '' : 'spacer-left'">music_note</mat-icon>
+      </mat-list-item>
+
       <mat-list-item routerLink="/converter">
         <a matLine *ngIf="!isMobileLayout">Youtube Converter</a>
         <mat-icon [class]="isMobileLayout ? '' : 'spacer-left'">play_arrow</mat-icon>
