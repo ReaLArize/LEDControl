@@ -1,1 +1,8 @@
-<p>music works!</p>
+<canvas style="width: 100%" baseChart
+        [datasets]="data"
+        [options]="options"
+        [labels]="labels"
+        type="line">
+</canvas>
+
+<button mat-raised-button (click)="randomData()">Test</button>

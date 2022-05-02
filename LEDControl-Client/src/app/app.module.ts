@@ -20,13 +20,14 @@ import { SettingsComponent } from './settings/settings.component';
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {FormsModule} from "@angular/forms";
 import { AddDeviceComponent } from './settings/add-device/add-device.component';
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClientModule} from "@angular/common/http";
 import {MatInputModule} from "@angular/material/input";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatSelectModule} from "@angular/material/select";
 import { MusicComponent } from './music/music.component';
 import { AddVideoComponent } from './converter/add-video/add-video.component';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {NgChartsModule} from "ng2-charts";
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     MatInputModule,
     MatDialogModule,
     MatSelectModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    NgChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
