@@ -11,38 +11,34 @@ namespace LEDControl.Programs;
 public class LightProgram : IProgram
 {
     private SettingsService _settingsService;
-    private LightProgramSettings _settings;
+    private LightProgramSettings Settings => _settingsService.LightProgramSettings;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly int _ledCount = 300;
     private Task _runningTask;
-    public LightProgram(LightProgramSettings settings)
+    public LightProgram()
     {
         _cancellationTokenSource = new CancellationTokenSource();
-        _settings = settings;
     }
     
     public void Init(IServiceProvider serviceProvider)
     {
-        _settingsService = serviceProvider.GetService<SettingsService>();
-        if(_settingsService != null)
-            _settingsService.LightSettingsEvent += (_, settings) =>
-            {
-                _settings = settings;
-                SendColor(_settings.Color);
-            };
+        _settingsService = serviceProvider.GetRequiredService<SettingsService>();
+        _settingsService.SettingsChangedEvent += sender =>
+        {
+            SendColor();
+        };
     }
 
-    private void SendColor(Color color)
+    private void SendColor()
     {
-        Console.WriteLine(color);
+        Console.WriteLine(_settingsService.LightProgramSettings.Color);
     }
 
     private async Task Update(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            SendColor(_settings.Color);
-            await Task.Delay(_settings.UpdateInterval, token);
+            SendColor();
+            await Task.Delay(Settings.UpdateInterval, token);
         }
     }
 

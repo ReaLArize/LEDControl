@@ -1,50 +1,65 @@
-﻿using LEDControl.Programs.Settings;
+﻿using System.Drawing;
+using LEDControl.Programs.Settings;
 
 namespace LEDControl.Services;
 
 public class SettingsService
 {
-    public RainbowProgramSettings RainbowProgramSettings;
-    public LightProgramSettings LightProgramSettings;
     private readonly object _lock;
+    private RainbowProgramSettings _rainbowProgramSettings;
+    private LightProgramSettings _lightProgramSettings;
+
+    public delegate void SettingsChangedEventHandler(object sender);
+    public event SettingsChangedEventHandler SettingsChangedEvent;
+    
+    public RainbowProgramSettings RainbowProgramSettings
+    {
+        get
+        {
+            lock (_lock)
+                return _rainbowProgramSettings;
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _rainbowProgramSettings = value;
+                SettingsChangedEvent?.Invoke(this);
+            }
+        }
+    }
+    public LightProgramSettings LightProgramSettings
+    {
+        get
+        {
+            lock (_lock)
+                return _lightProgramSettings;
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _lightProgramSettings = value;
+                SettingsChangedEvent?.Invoke(this);
+            }
+        }
+    }
+    
     public SettingsService()
     {
         _lock = new object();
-        LightProgramSettings = new LightProgramSettings();
+        LightProgramSettings = new LightProgramSettings
+        {
+            Color = Color.Black
+        };
         RainbowProgramSettings = new RainbowProgramSettings();
     }
-    
-    #region Rainbow
 
-    
-    public delegate void RainbowSettingsEventHandler(object sender, RainbowProgramSettings settings);
-    public event RainbowSettingsEventHandler RainbowSettingsEvent;
-    public void RaiseRainbowSettingsEvent(RainbowProgramSettings settings)
+    public void RaiseSettingsChangedEvent()
     {
-        lock (_lock)
-        {
-            RainbowProgramSettings = settings;
-            RainbowSettingsEvent?.Invoke(this, settings);
-        }
-            
+        lock(_lock)
+            SettingsChangedEvent?.Invoke(this);
     }
     
-    #endregion
-    
-    #region Light
-
-    
-    public delegate void LightSettingsEventHandler(object sender, LightProgramSettings settings);
-    public event LightSettingsEventHandler LightSettingsEvent;
-    public void RaiseLightSettingsEvent(LightProgramSettings settings)
-    {
-        lock (_lock)
-        {
-            LightProgramSettings = settings;
-            LightSettingsEvent?.Invoke(this, settings);
-        }
-    }
-    
-    #endregion
     
 }

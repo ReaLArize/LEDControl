@@ -11,10 +11,8 @@ public class TestController : ControllerBase
 {
     private readonly ProgramService _programService;
     private readonly SettingsService _settingsService;
-    private readonly ConvertService _convertService;
-    public TestController(ProgramService programService, SettingsService settingsService, ConvertService convertService)
+    public TestController(ProgramService programService, SettingsService settingsService)
     {
-        _convertService = convertService;
         _programService = programService;
         _settingsService = settingsService;
     }
@@ -22,7 +20,7 @@ public class TestController : ControllerBase
     [HttpGet("test")]
     public IActionResult Test()
     {
-        _programService.Start(new LightProgram(new LightProgramSettings()));
+        _programService.Start(new LightProgram());
         return Ok("OK");
     }
     
@@ -36,10 +34,8 @@ public class TestController : ControllerBase
     [HttpGet("test3")]
     public IActionResult Test3()
     {
-        _settingsService.RaiseLightSettingsEvent(new LightProgramSettings()
-        {
-            Color = Color.Aqua
-        });
+        _settingsService.LightProgramSettings.Color = Color.Aqua;
+        _settingsService.RaiseSettingsChangedEvent();
         return Ok("OK");
     }
 }

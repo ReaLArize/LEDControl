@@ -58,11 +58,11 @@ export class HomeComponent implements OnInit {
   }
 
   ColorChanged(color, changes){
-    console.log(color.hexString);
+    this.hubConnection.send("ChangeLight", color.hexString);
   }
 
   onOff(){
-    this.colorPicker.color.hexString = "#000000";
+    this.hubConnection.send("Off");
   }
 
 }

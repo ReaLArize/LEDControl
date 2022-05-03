@@ -11,21 +11,18 @@ namespace LEDControl.Programs;
 public class RainbowProgram : IProgram
 {
     private SettingsService _settingsService;
-    private RainbowProgramSettings _settings;
+    private RainbowProgramSettings Settings => _settingsService.RainbowProgramSettings;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly int _ledCount = 300;
     private Task _runningTask;
-    public RainbowProgram(RainbowProgramSettings settings)
+    public RainbowProgram()
     {
         _cancellationTokenSource = new CancellationTokenSource();
-        _settings = settings;
     }
     
     public void Init(IServiceProvider serviceProvider)
     {
         _settingsService = serviceProvider.GetService<SettingsService>();
-        if(_settingsService != null)
-            _settingsService.RainbowSettingsEvent += (sender, settings) => _settings = settings;
     }
     
 
@@ -45,7 +42,7 @@ public class RainbowProgram : IProgram
                     colorArray[ii] = getWheelColor(((ii * 256 / _ledCount) + i) % 256);
                 }
                 Console.WriteLine(string.Join(",", colorArray));
-                await Task.Delay(_settings.Speed, token);
+                await Task.Delay(Settings.Speed, token);
             }
         }
     }
