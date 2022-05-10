@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialogRef} from "@angular/material/dialog";
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Device} from "../../models/device";
 
 @Component({
@@ -8,9 +8,11 @@ import {Device} from "../../models/device";
   styleUrls: ['./add-device.component.scss']
 })
 export class AddDeviceComponent implements OnInit {
-  device: Device = new Device();
+  device: Device;
 
-  constructor(private dialogRef: MatDialogRef<AddDeviceComponent>) { }
+  constructor(private dialogRef: MatDialogRef<AddDeviceComponent>, @Inject(MAT_DIALOG_DATA) private data: Device) {
+    this.device = this.data;
+  }
 
   ngOnInit(): void {
   }

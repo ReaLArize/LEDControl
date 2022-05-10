@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LEDControl.Programs;
 using LEDControl.Services;
 using Microsoft.AspNetCore.SignalR;
+using VideoLibrary;
 
 namespace LEDControl.Hubs;
 
@@ -25,6 +26,7 @@ public class LightHub : Hub
         _settingsService.RaiseSettingsChangedEvent();
         if(_programService.CurrentProgram is not LightProgram)
             _programService.Start(new LightProgram());
+        await Clients.Others.SendAsync("UpdateLight", hexString);
     }
 
     public async Task Off()
@@ -33,6 +35,6 @@ public class LightHub : Hub
         _settingsService.RaiseSettingsChangedEvent();
         if(_programService.CurrentProgram is not LightProgram)
             _programService.Start(new LightProgram());
-        
+        await Clients.Others.SendAsync("UpdateLight", "#000000");
     }
 }

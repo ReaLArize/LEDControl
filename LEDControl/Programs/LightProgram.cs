@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using LEDControl.Programs.Settings;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
+using LEDControl.Database.Models;
 using LEDControl.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,44 +11,36 @@ namespace LEDControl.Programs;
 public class LightProgram : IProgram
 {
     private SettingsService _settingsService;
-    private LightProgramSettings Settings => _settingsService.LightProgramSettings;
-    private readonly CancellationTokenSource _cancellationTokenSource;
-    private Task _runningTask;
-    public LightProgram()
-    {
-        _cancellationTokenSource = new CancellationTokenSource();
-    }
-    
+    private DeviceService _deviceService;
+    private UdpClient _udpClient;
+    private List<Device> _devices;
+
     public void Init(IServiceProvider serviceProvider)
     {
+        _udpClient = new UdpClient();
         _settingsService = serviceProvider.GetRequiredService<SettingsService>();
-        _settingsService.SettingsChangedEvent += sender =>
-        {
-            SendColor();
-        };
+        _deviceService = serviceProvider.GetRequiredService<DeviceService>();
+        _settingsService.SettingsChangedEvent += SendColor;
+        _devices = _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light).ToList();
     }
 
-    private void SendColor()
+    private void SendColor(object sender)
     {
-        Console.WriteLine(_settingsService.LightProgramSettings.Color);
-    }
-
-    private async Task Update(CancellationToken token)
-    {
-        while (!token.IsCancellationRequested)
+        foreach (var device in _devices)
         {
-            SendColor();
-            await Task.Delay(Settings.UpdateInterval, token);
+            device.LightRequest.FullColor(_settingsService.LightProgramSettings.Color);
+            var data = device.LightRequest.ToByteArray();
+            _udpClient.Send(data, data.Length, device.Hostname, device.Port);
         }
     }
 
     public void Run()
     {
-        _runningTask = Update(_cancellationTokenSource.Token);
+        SendColor(null);
     }
 
     public void Stop()
     {
-        _cancellationTokenSource.Cancel();
+        _settingsService.SettingsChangedEvent -= SendColor;
     }
 }

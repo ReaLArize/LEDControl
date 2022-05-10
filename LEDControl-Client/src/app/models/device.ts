@@ -4,6 +4,7 @@ export class Device {
   mode: DeviceMode;
   hostname: string;
   port: number;
+  numLeds: number;
 }
 
 export enum DeviceMode{

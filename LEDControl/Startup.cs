@@ -36,13 +36,14 @@ namespace LEDControl
                 options.UseMySql(Configuration["ConnectionString"], 
                     new MariaDbServerVersion(new Version(10, 5, 12))));
 
+            services.AddSingleton<DeviceService>();
             services.AddSingleton<ProgramService>();
             services.AddSingleton<SettingsService>();
             services.AddHostedService<ConvertService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DeviceService _)
         {
             var baseUrl = Configuration["BaseUrl"];
             if (!string.IsNullOrEmpty(baseUrl))

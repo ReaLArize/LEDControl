@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using LEDControl.Programs;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LEDControl.Services;
@@ -46,6 +44,7 @@ public class ProgramService
         lock (_executionLock)
         {
             if (CurrentProgram == null) return;
+            _logger.LogInformation("Stopping current program {Name}", CurrentProgram.GetType().Name);
             CurrentProgram.Stop();
             CurrentProgram = null;
         }

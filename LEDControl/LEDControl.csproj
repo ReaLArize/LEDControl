@@ -24,4 +24,8 @@
         <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\PulseAudioWrapper\PulseAudioWrapper\PulseAudioWrapper.csproj" />
+    </ItemGroup>
+
 </Project>

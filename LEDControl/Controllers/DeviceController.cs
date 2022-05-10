@@ -1,10 +1,9 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using LEDControl.Database;
 using LEDControl.Database.Models;
+using LEDControl.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LEDControl.Controllers;
 
@@ -12,17 +11,17 @@ namespace LEDControl.Controllers;
 [ApiController]
 public class DeviceController : ControllerBase
 {
-    private readonly DataContext _dataContext;
+    private readonly DeviceService _deviceService;
 
-    public DeviceController(DataContext dataContext)
+    public DeviceController(DeviceService deviceService)
     {
-        _dataContext = dataContext;
+        _deviceService = deviceService;
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetDevices()
+    public IActionResult GetDevices()
     {
-        return Ok(await _dataContext.Devices.ToListAsync());
+        return Ok(_deviceService.Devices);
     }
 
     [HttpPost]
@@ -36,11 +35,9 @@ public class DeviceController : ControllerBase
             return BadRequest();
         if (device.Name.Length < 3)
             return BadRequest();
-        
-        device.Id = Guid.NewGuid();
-        await _dataContext.Devices.AddAsync(device);
-        await _dataContext.SaveChangesAsync();
-        return Ok(device);
+        if (device.NumLeds < 3)
+            return BadRequest();
+        return Ok(await _deviceService.AddDevice(device));
     }
 
     [HttpDelete("{id:guid}")]
@@ -48,12 +45,9 @@ public class DeviceController : ControllerBase
     {
         if (id == Guid.Empty)
             return BadRequest();
-        
-        var device = await _dataContext.Devices.FirstOrDefaultAsync(p => p.Id == id);
-        if (device is null)
+        if (!await _deviceService.DeleteDevice(id))
             return NotFound();
-        _dataContext.Devices.Remove(device);
-        await _dataContext.SaveChangesAsync();
+        
         return NoContent();
     }
 }

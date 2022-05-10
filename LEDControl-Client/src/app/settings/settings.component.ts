@@ -26,6 +26,7 @@ export class SettingsComponent implements OnInit {
 
   openAddDialog(){
     const dialogRef = this.dialog.open(AddDeviceComponent, {
+      data: new Device(),
       width: '350px'
     });
 

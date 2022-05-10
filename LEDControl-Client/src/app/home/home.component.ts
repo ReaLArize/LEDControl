@@ -13,6 +13,8 @@ declare var iro: any;
 export class HomeComponent implements OnInit {
   private colorPicker: any;
   private hubConnection: HubConnection;
+  private colorChanging = false;
+
   constructor(private ngZone: NgZone, private notificationService: NotificationService,
               private eventService: EventService) {
     this.eventService.subTitle.next("");
@@ -45,6 +47,11 @@ export class HomeComponent implements OnInit {
       this.notificationService.showMessage("Connection restored!");
       this.eventService.connectionStatus.next(true);
     });
+    this.hubConnection.on("UpdateLight", (hexString) => {
+      this.colorChanging = true;
+      this.colorPicker.color.hexString = hexString;
+      this.colorChanging = false;
+    });
   }
 
   initColorPicker(){
@@ -58,7 +65,9 @@ export class HomeComponent implements OnInit {
   }
 
   ColorChanged(color, changes){
-    this.hubConnection.send("ChangeLight", color.hexString);
+    if(!this.colorChanging){
+      this.hubConnection.send("ChangeLight", color.hexString);
+    }
   }
 
   onOff(){
