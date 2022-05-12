@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using LEDControl.Database.Models;
@@ -13,7 +12,6 @@ public class LightProgram : IProgram
     private SettingsService _settingsService;
     private DeviceService _deviceService;
     private UdpClient _udpClient;
-    private List<Device> _devices;
 
     public void Init(IServiceProvider serviceProvider)
     {
@@ -21,12 +19,11 @@ public class LightProgram : IProgram
         _settingsService = serviceProvider.GetRequiredService<SettingsService>();
         _deviceService = serviceProvider.GetRequiredService<DeviceService>();
         _settingsService.SettingsChangedEvent += SendColor;
-        _devices = _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light).ToList();
     }
 
     private void SendColor(object sender)
     {
-        foreach (var device in _devices)
+        foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light))
         {
             device.LightRequest.FullColor(_settingsService.LightProgramSettings.Color);
             var data = device.LightRequest.ToByteArray();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -17,7 +16,6 @@ public class RainbowProgram : IProgram
 {
     private SettingsService _settingsService;
     private DeviceService _deviceService;
-    private List<Device> _devices;
     private readonly UdpClient _udpClient;
     private RainbowProgramSettings Settings => _settingsService.RainbowProgramSettings;
     private readonly CancellationTokenSource _cancellationTokenSource;
@@ -32,15 +30,13 @@ public class RainbowProgram : IProgram
     {
         _settingsService = serviceProvider.GetRequiredService<SettingsService>();
         _deviceService = serviceProvider.GetRequiredService<DeviceService>();
-        _devices = _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light).ToList();
     }
     
-
     private async Task RunCycle(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            foreach (var device in _devices)
+            foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light))
             {
                 device.LightRequest.Mode = LightRequestMode.Color;
                 if (token.IsCancellationRequested)

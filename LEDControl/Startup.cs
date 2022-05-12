@@ -72,6 +72,7 @@ namespace LEDControl
             {
                 endpoints.MapHub<LightHub>("hubs/light");
                 endpoints.MapHub<ConvertHub>("hubs/convert");
+                endpoints.MapHub<MusicHub>("hubs/music");
                 endpoints.MapControllers();
             });
         }
