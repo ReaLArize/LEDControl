@@ -11,7 +11,7 @@ namespace LEDControl.Services;
 
 public class DeviceService
 {
-    private object _accessLock = new ();
+    private readonly object _accessLock = new ();
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private List<Device> _devices;
     public List<Device> Devices 

@@ -83,6 +83,7 @@ public class RainbowProgram : IProgram
     public void Stop()
     {
         _cancellationTokenSource.Cancel();
-        _runningTask.Wait();
+        if(!_runningTask.IsCompleted)
+            _runningTask.Wait();
     }
 }

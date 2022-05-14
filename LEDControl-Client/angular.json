@@ -20,6 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "crossOrigin": "use-credentials",
             "outputPath": "dist/LEDControl-Client",
             "index": "src/index.html",
             "main": "src/main.ts",

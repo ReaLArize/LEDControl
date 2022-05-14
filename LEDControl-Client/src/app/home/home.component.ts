@@ -3,6 +3,7 @@ import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {environment} from "../../environments/environment";
 import {NotificationService} from "../services/notification.service";
 import {EventService} from "../services/event.service";
+import {Light} from "../models/light";
 declare var iro: any;
 
 @Component({
@@ -14,6 +15,7 @@ export class HomeComponent implements OnInit {
   private colorPicker: any;
   private hubConnection: HubConnection;
   private colorChanging = false;
+  isRainbow: boolean;
 
   constructor(private ngZone: NgZone, private notificationService: NotificationService,
               private eventService: EventService) {
@@ -30,6 +32,12 @@ export class HomeComponent implements OnInit {
       .withUrl(environment.url + "/hubs/light")
       .withAutomaticReconnect()
       .build();
+    this.hubConnection.on("UpdateLight", (light: Light) => {
+      this.colorChanging = true;
+      this.colorPicker.color.hexString = light.hexString;
+      this.isRainbow = light.rainbowOn;
+      this.colorChanging = false;
+    });
     await this.hubConnection.start()
       .then(res => {
         this.eventService.connectionStatus.next(true);
@@ -46,11 +54,6 @@ export class HomeComponent implements OnInit {
     this.hubConnection.onreconnected(error => {
       this.notificationService.showMessage("Connection restored!");
       this.eventService.connectionStatus.next(true);
-    });
-    this.hubConnection.on("UpdateLight", (hexString) => {
-      this.colorChanging = true;
-      this.colorPicker.color.hexString = hexString;
-      this.colorChanging = false;
     });
   }
 
@@ -72,6 +75,11 @@ export class HomeComponent implements OnInit {
 
   onOff(){
     this.hubConnection.send("Off");
+  }
+
+  doRainbow(){
+    this.isRainbow = true;
+    this.hubConnection.send("Rainbow");
   }
 
 }

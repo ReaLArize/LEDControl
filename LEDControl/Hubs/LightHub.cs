@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
+using LEDControl.Dtos;
 using LEDControl.Programs;
 using LEDControl.Services;
 using Microsoft.AspNetCore.SignalR;
-using VideoLibrary;
 
 namespace LEDControl.Hubs;
 
@@ -20,13 +20,25 @@ public class LightHub : Hub
         _colorConverter = new ColorConverter();
     }
 
+    public override async Task OnConnectedAsync()
+    {
+        var color = _settingsService.LightProgramSettings.Color;
+        var light = new Light
+        {
+            HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
+            RainbowOn = _programService.CurrentProgram is RainbowProgram
+        };
+        await Clients.Caller.SendAsync("UpdateLight", light);
+        await base.OnConnectedAsync();
+    }
+
     public async Task ChangeLight(string hexString)
     {
         _settingsService.LightProgramSettings.Color = (Color)(_colorConverter.ConvertFromString(hexString) ?? Color.Black);
         _settingsService.RaiseSettingsChangedEvent();
         if(_programService.CurrentProgram is not LightProgram)
             _programService.Start(new LightProgram());
-        await Clients.Others.SendAsync("UpdateLight", hexString);
+        await UpdateLight();
     }
 
     public async Task Off()
@@ -35,6 +47,24 @@ public class LightHub : Hub
         _settingsService.RaiseSettingsChangedEvent();
         if(_programService.CurrentProgram is not LightProgram)
             _programService.Start(new LightProgram());
-        await Clients.Others.SendAsync("UpdateLight", "#000000");
+        await UpdateLight();
+    }
+
+    public async Task Rainbow()
+    {
+        _programService.Stop();
+        _programService.Start(new RainbowProgram());
+        await UpdateLight();
+    }
+
+    private async Task UpdateLight()
+    {
+        var color = _settingsService.LightProgramSettings.Color;
+        var light = new Light
+        {
+            HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
+            RainbowOn = _programService.CurrentProgram is RainbowProgram
+        };
+        await Clients.Others.SendAsync("UpdateLight", light);
     }
 }
