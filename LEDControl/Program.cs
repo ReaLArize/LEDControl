@@ -1,6 +1,5 @@
 using System;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
@@ -12,16 +11,13 @@ namespace LEDControl
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
-                .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .CreateLogger();
+                .CreateBootstrapLogger();
 
             try
             {
-                Log.Information("Starting web host");
-                var webhost = CreateHostBuilder(args).Build();
-                Log.Information("Lel");
-                webhost.Run();
+                Log.Information("Starting webhost");
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
@@ -29,19 +25,13 @@ namespace LEDControl
             }
             finally
             {
+                Log.Information("Webhost stopping");
                 Log.CloseAndFlush();
             }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
-                {
-                    services.Configure<HostOptions>(hostOptions =>
-                    {
-                        hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
-                    });
-                })
                 .UseSerilog((context, services, configuration) => configuration
                     .MinimumLevel.Information()
                     .ReadFrom.Configuration(context.Configuration)
