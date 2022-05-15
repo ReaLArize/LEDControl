@@ -8,12 +8,12 @@
 
     <ItemGroup>
         <PackageReference Include="FftSharp" Version="1.1.5" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -22,8 +22,8 @@
         <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
         <PackageReference Include="VideoLibrary" Version="3.1.9" />
-        <PackageReference Include="Xabe.FFmpeg" Version="5.1.0" />
-        <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
+        <PackageReference Include="Xabe.FFmpeg" Version="5.2.0" />
+        <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.0" />
     </ItemGroup>
 
     <ItemGroup>

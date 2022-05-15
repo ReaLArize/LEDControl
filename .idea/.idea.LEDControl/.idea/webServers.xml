@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="bf7e3616-da89-43f2-8847-b7420c7a6cf7" name="Pi">
+        <fileTransfer rootFolder="/etc/led/backend" accessType="SFTP" host="192.168.178.8" port="22" sshConfigId="8b43aa0f-ab23-48c2-967e-eaa40a95dd24" sshConfig="pi@192.168.178.8:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

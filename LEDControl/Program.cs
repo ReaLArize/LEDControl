@@ -1,17 +1,17 @@
 using System;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
 
 namespace LEDControl
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .MinimumLevel.Verbose()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .CreateLogger();
@@ -19,7 +19,9 @@ namespace LEDControl
             try
             {
                 Log.Information("Starting web host");
-                CreateHostBuilder(args).Build().Run();
+                var webhost = CreateHostBuilder(args).Build();
+                Log.Information("Lel");
+                webhost.Run();
             }
             catch (Exception ex)
             {
@@ -31,9 +33,17 @@ namespace LEDControl
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureServices(services =>
+                {
+                    services.Configure<HostOptions>(hostOptions =>
+                    {
+                        hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+                    });
+                })
                 .UseSerilog((context, services, configuration) => configuration
+                    .MinimumLevel.Information()
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(services)
                     .Enrich.FromLogContext()

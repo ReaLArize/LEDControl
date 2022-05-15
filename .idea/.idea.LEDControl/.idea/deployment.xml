@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="Pi" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="Pi">
+        <serverdata>
+          <mappings>
+            <mapping local="$USER_HOME$/.dotnet/sdk/6.0.202/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_6_default.editorconfig" web="/" />
+            <mapping local="$USER_HOME$/.dotnet/sdk/6.0.202/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_6_default.editorconfig" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl.sln" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Controllers/ConvertController.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Controllers/DeviceController.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Controllers/TestController.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Database/DataContext.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Database/Models/ConvertStatus.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Database/Models/ConvertVideo.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Database/Models/Device.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Database/Models/DeviceMode.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Dtos/Light.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Dtos/LightRequest.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Hubs/ConvertHub.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Hubs/LightHub.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Hubs/MusicHub.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/LEDControl.csproj" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Migrations/20220427212023_init.Designer.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Migrations/20220427212023_init.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Migrations/20220510194506_NumLeds.Designer.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Migrations/20220510194506_NumLeds.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Migrations/DataContextModelSnapshot.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Program.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/IProgram.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/LightProgram.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/MusicProgram.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/RainbowProgram.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/Settings/LightProgramSettings.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/Settings/MusicProgramSettings.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Programs/Settings/RainbowProgramSettings.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Properties/launchSettings.json" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Services/ConvertService.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Services/DeviceService.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Services/ProgramService.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Services/SettingsService.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/Startup.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/appsettings.json" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/ffmpeg" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/ffprobe" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/obj/Debug/net6.0/LEDControl.AssemblyInfo.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/obj/Debug/net6.0/LEDControl.GeneratedMSBuildEditorConfig.editorconfig" web="/" />
+            <mapping local="$PROJECT_DIR$/LEDControl/version.json" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/PulseAudioWrapper.csproj" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/PulseSimpleApi.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/obj/Debug/net6.0/PulseAudioWrapper.AssemblyInfo.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/obj/Debug/net6.0/PulseAudioWrapper.GeneratedMSBuildEditorConfig.editorconfig" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/obj/Debug/net6.0/PulseAudioWrapper.GlobalUsings.g.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/pa_buffer_attr.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/pa_sample_format.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/pa_sample_spec.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/pa_simple.cs" web="/" />
+            <mapping local="$PROJECT_DIR$/../PulseAudioWrapper/PulseAudioWrapper/pa_stream_direction.cs" web="/" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

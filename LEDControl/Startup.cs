@@ -19,7 +19,7 @@ namespace LEDControl
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,14 +36,15 @@ namespace LEDControl
                 options.UseMySql(Configuration["ConnectionString"], 
                     new MariaDbServerVersion(new Version(10, 5, 12))));
 
-            services.AddSingleton<DeviceService>();
-            services.AddSingleton<ProgramService>();
-            services.AddSingleton<SettingsService>();
-            services.AddHostedService<ConvertService>();
+            //services.AddSingleton<DeviceService>();
+            //services.AddSingleton<ProgramService>();
+            //services.AddSingleton<SettingsService>();
+            //services.AddHostedService<ConvertService>();
+            services.AddHostedService<LifetimeEventsHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DeviceService _)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var baseUrl = Configuration["BaseUrl"];
             if (!string.IsNullOrEmpty(baseUrl))

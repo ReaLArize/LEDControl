@@ -39,26 +39,35 @@ public class ConvertService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _tempPath = Directory.CreateDirectory("./temp");
-        _finalPath = Directory.CreateDirectory("./convertfiles");
-        
-        await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
-        FFmpeg.SetExecutablesPath(Directory.GetCurrentDirectory());
-
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            var continueProc = false;
-            try
+            _tempPath = Directory.CreateDirectory("./temp");
+            _finalPath = Directory.CreateDirectory("./convertfiles");
+
+            await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
+            FFmpeg.SetExecutablesPath(Directory.GetCurrentDirectory());
+
+            while (!stoppingToken.IsCancellationRequested)
             {
-                continueProc = await DoWork(stoppingToken);
+                var continueProc = false;
+                try
+                {
+                    continueProc = await DoWork(stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex, "Unhandled Exception: {Message}", ex.Message);
+                }
+
+                if (!continueProc)
+                    await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex, "Unhandled Exception: {Message}", ex.Message);
-            }
-            if (!continueProc)
-                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
         }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(ex, "Error ConvertService {Message}", ex.Message);
+        }
+
     }
 
     private async Task<bool> DoWork(CancellationToken token)
