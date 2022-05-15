@@ -20,30 +20,31 @@ public class RainbowProgram : IProgram
     private RainbowProgramSettings Settings => _settingsService.RainbowProgramSettings;
     private readonly CancellationTokenSource _cancellationTokenSource;
     private Task _runningTask;
+
     public RainbowProgram()
     {
         _cancellationTokenSource = new CancellationTokenSource();
         _udpClient = new UdpClient();
     }
-    
+
     public void Init(IServiceProvider serviceProvider)
     {
         _settingsService = serviceProvider.GetRequiredService<SettingsService>();
         _deviceService = serviceProvider.GetRequiredService<DeviceService>();
     }
-    
+
     private async Task RunCycle(CancellationToken token)
     {
         while (!token.IsCancellationRequested)
         {
-            foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light))
+            if (token.IsCancellationRequested)
+                return;
+
+            for (var i = 0; i < 256; i++)
             {
-                device.LightRequest.Mode = LightRequestMode.Color;
-                if (token.IsCancellationRequested)
-                    return;
-                
-                for (var i = 0; i < 256; i++)
+                foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light))
                 {
+                    device.LightRequest.Mode = LightRequestMode.Color;
                     if (token.IsCancellationRequested)
                         return;
                     for (var ii = 0; ii < device.NumLeds; ii++)
@@ -52,6 +53,7 @@ public class RainbowProgram : IProgram
                             return;
                         device.LightRequest.Colors[ii] = getWheelColor(((ii * 256 / device.NumLeds) + i) % 256);
                     }
+
                     var data = device.LightRequest.ToByteArray();
                     await _udpClient.SendAsync(data, data.Length, device.Hostname, device.Port);
                     await Task.Delay(Settings.Speed, token);
@@ -59,18 +61,20 @@ public class RainbowProgram : IProgram
             }
         }
     }
-    
+
     private Color getWheelColor(int wheelpos)
     {
         if (wheelpos < 85)
         {
             return Color.FromArgb(0, wheelpos * 3, 255 - wheelpos * 3);
         }
+
         if (wheelpos < 170)
         {
             wheelpos -= 85;
             return Color.FromArgb(wheelpos * 3, 255 - wheelpos * 3, 0);
         }
+
         wheelpos -= 170;
         return Color.FromArgb(255 - wheelpos * 3, 0, wheelpos * 3);
     }
@@ -83,7 +87,8 @@ public class RainbowProgram : IProgram
     public void Stop()
     {
         _cancellationTokenSource.Cancel();
-        if(!_runningTask.IsCompleted)
+        if (!_runningTask.IsCompleted)
             _runningTask.Wait();
+        Task.Delay(50).Wait();
     }
 }

@@ -79,7 +79,9 @@ public unsafe class MusicProgram : IProgram
     public void Stop()
     {
         _tokenSource.Cancel();
-        _workTask.Wait();
+        if(!_workTask.IsCompleted)
+            _workTask.Wait();
         PulseSimpleApi.pa_simple_free(_apiRead);
+        Task.Delay(50).Wait();
     }
 }

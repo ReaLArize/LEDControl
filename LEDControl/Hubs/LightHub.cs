@@ -47,17 +47,24 @@ public class LightHub : Hub
         _settingsService.RaiseSettingsChangedEvent();
         if(_programService.CurrentProgram is not LightProgram)
             _programService.Start(new LightProgram());
-        await UpdateLight();
+        await UpdateLight(true);
     }
 
     public async Task Rainbow()
     {
         _programService.Stop();
         _programService.Start(new RainbowProgram());
-        await UpdateLight();
+        await UpdateLight(true);
+    }
+    
+    public async Task Music()
+    {
+        _programService.Stop();
+        _programService.Start(new MusicProgram());
+        await UpdateLight(true);
     }
 
-    private async Task UpdateLight()
+    private async Task UpdateLight(bool updateAll = false)
     {
         var color = _settingsService.LightProgramSettings.Color;
         var light = new Light
@@ -65,6 +72,9 @@ public class LightHub : Hub
             HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
             RainbowOn = _programService.CurrentProgram is RainbowProgram
         };
-        await Clients.Others.SendAsync("UpdateLight", light);
+        if (updateAll)
+            await Clients.All.SendAsync("UpdateLight", light);
+        else
+            await Clients.Others.SendAsync("UpdateLight", light);
     }
 }

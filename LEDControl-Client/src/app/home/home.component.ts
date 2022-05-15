@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit {
   private hubConnection: HubConnection;
   private colorChanging = false;
   isRainbow: boolean;
+  isMusic: boolean;
 
   constructor(private ngZone: NgZone, private notificationService: NotificationService,
               private eventService: EventService) {
@@ -78,8 +79,11 @@ export class HomeComponent implements OnInit {
   }
 
   doRainbow(){
-    this.isRainbow = true;
     this.hubConnection.send("Rainbow");
+  }
+
+  doMusic(){
+    this.hubConnection.send("Music");
   }
 
 }
