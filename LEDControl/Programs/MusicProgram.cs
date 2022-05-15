@@ -62,13 +62,14 @@ public unsafe class MusicProgram : IProgram
 
             var fftData = FftSharp.Transform.FFTpower(Array.ConvertAll(results, x => (double)x));
             Process(fftData);
-            Thread.Sleep(20);
+            Thread.Sleep(10);
         }
     }
 
     private void Process(double[] fftData)
     {
-        _hubContext.Clients.All.SendAsync("Update", fftData).Wait();
+        if(fftData.All(p => !double.IsNaN(p) && !double.IsInfinity(p)))
+            _hubContext.Clients.All.SendAsync("UpdateChart", fftData).Wait();
     }
 
     public void Run()

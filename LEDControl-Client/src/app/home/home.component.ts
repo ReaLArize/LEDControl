@@ -37,12 +37,12 @@ export class HomeComponent implements OnInit {
       this.colorChanging = true;
       this.colorPicker.color.hexString = light.hexString;
       this.isRainbow = light.rainbowOn;
+      this.isMusic = light.musicOn;
       this.colorChanging = false;
     });
     await this.hubConnection.start()
       .then(res => {
         this.eventService.connectionStatus.next(true);
-        this.notificationService.showMessage("Connected!", 1500);
       })
       .catch(error => {
         this.eventService.connectionStatus.next(false);
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
       this.eventService.connectionStatus.next(false);
     })
     this.hubConnection.onreconnected(error => {
-      this.notificationService.showMessage("Connection restored!");
+      this.notificationService.showMessage("Connection restored!", 1000);
       this.eventService.connectionStatus.next(true);
     });
   }

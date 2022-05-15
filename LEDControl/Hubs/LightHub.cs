@@ -70,7 +70,8 @@ public class LightHub : Hub
         var light = new Light
         {
             HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
-            RainbowOn = _programService.CurrentProgram is RainbowProgram
+            RainbowOn = _programService.CurrentProgram is RainbowProgram,
+            MusicOn = _programService.CurrentProgram is MusicProgram
         };
         if (updateAll)
             await Clients.All.SendAsync("UpdateLight", light);

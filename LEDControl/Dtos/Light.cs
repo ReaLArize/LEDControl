@@ -4,4 +4,5 @@ public class Light
 {
     public string HexString { get; set; }
     public bool RainbowOn { get; set; }
+    public bool MusicOn { get; set; }
 }

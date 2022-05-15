@@ -13,7 +13,7 @@ import {environment} from "../../environments/environment";
 })
 export class MusicComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-  dataLength = 512;
+  dataLength = 256;
   data: ChartDataset[] = [
     {data: [], label:"Music", cubicInterpolationMode: 'monotone', tension: 0.4, pointRadius: 0}
   ];
@@ -49,7 +49,6 @@ export class MusicComponent implements OnInit {
     await this.hubConnection.start()
       .then(res => {
         this.eventService.connectionStatus.next(true);
-        this.notiService.showMessage("Connected!", 1500);
       })
       .catch(error => {
         this.eventService.connectionStatus.next(false);
@@ -60,7 +59,7 @@ export class MusicComponent implements OnInit {
       this.eventService.connectionStatus.next(false);
     })
     this.hubConnection.onreconnected(error => {
-      this.notiService.showMessage("Connection restored!");
+      this.notiService.showMessage("Connection restored!", 1000);
       this.eventService.connectionStatus.next(true);
     });
     this.hubConnection.on("UpdateChart", (fftData: number[]) => {

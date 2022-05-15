@@ -35,7 +35,6 @@ export class ConverterComponent implements OnInit {
     await this.hubConnection.start()
       .then(res => {
         this.eventService.connectionStatus.next(true);
-        this.notiService.showMessage("Connected!", 1500);
       })
       .catch(error => {
         this.eventService.connectionStatus.next(false);
@@ -46,7 +45,7 @@ export class ConverterComponent implements OnInit {
       this.eventService.connectionStatus.next(false);
     })
     this.hubConnection.onreconnected(error => {
-      this.notiService.showMessage("Connection restored!");
+      this.notiService.showMessage("Connection restored!", 1000);
       this.eventService.connectionStatus.next(true);
     });
 
