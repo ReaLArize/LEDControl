@@ -13,15 +13,16 @@ import {environment} from "../../environments/environment";
 })
 export class MusicComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-  dataLength = 256;
+  dataLength = 512;
   data: ChartDataset[] = [
-    {data: [], label:"Music", cubicInterpolationMode: 'monotone', tension: 0.4, pointRadius: 0}
+    {data: [], label:"Music", pointRadius: 0}
   ];
   public labels = [];
   options: ChartOptions = {
     scales:{
       y:{
-        max : 1
+        max : 40,
+        min: -2
       },
       x: {
         display: false

@@ -32,6 +32,10 @@ public unsafe class MusicProgram : IProgram
             format = pa_sample_format.PA_SAMPLE_FLOAT32LE,
             rate = 44100
         };
+        pa_buffer_attr attr = new pa_buffer_attr()
+        {
+            fragsize = 1600
+        };
         int error;
         _apiRead = PulseSimpleApi.pa_simple_new(
             null,
@@ -41,35 +45,31 @@ public unsafe class MusicProgram : IProgram
             "Test",
             &sampleSpec,
             null,
-            null,
+            &attr,
             &error
         );
 
-        nuint chunkSize = 512;
-        nuint formatSplit = 4;
-        var bufferSize = chunkSize * formatSplit;
-        var buffer = new byte[bufferSize];
-
+        nuint chunkSize = 1024;
+        var buffer = new byte[chunkSize];
         while (!token.IsCancellationRequested)
         {
-            if (PulseSimpleApi.pa_simple_read(_apiRead, buffer, bufferSize, &error) < 0)
+            PulseSimpleApi.pa_simple_flush(_apiRead, &error);
+            if (PulseSimpleApi.pa_simple_read(_apiRead, buffer, chunkSize, &error) < 0)
                 Console.WriteLine("error");
 
-            var results = new float[buffer.Length / (int)formatSplit];
-            var chunks = buffer.Chunk((int)formatSplit).ToArray();
-            for (var j = 0; j < chunks.Length; j++)
-                results[j] = BitConverter.ToSingle(chunks[j]);
-
-            var fftData = FftSharp.Transform.FFTpower(Array.ConvertAll(results, x => (double)x));
-            Process(fftData);
+            var rawData = Array.ConvertAll(buffer, Convert.ToDouble);
+            var fftData = FftSharp.Transform.FFTpower(rawData);
+            Process(fftData.Skip(1).ToArray());
             Thread.Sleep(10);
         }
     }
 
     private void Process(double[] fftData)
     {
-        if(fftData.All(p => !double.IsNaN(p) && !double.IsInfinity(p)))
+        if (fftData.All(p => !double.IsNaN(p) && !double.IsInfinity(p)))
             _hubContext.Clients.All.SendAsync("UpdateChart", fftData).Wait();
+        else
+            _hubContext.Clients.All.SendAsync("UpdateChart", new double[fftData.Length]);
     }
 
     public void Run()
