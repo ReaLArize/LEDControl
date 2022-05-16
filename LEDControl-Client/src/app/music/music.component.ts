@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {EventService} from "../services/event.service";
 import {BaseChartDirective} from "ng2-charts";
-import {ChartDataset, ChartOptions } from 'chart.js';
+import { ChartDataset, ChartOptions} from 'chart.js';
 import {NotificationService} from "../services/notification.service";
 import {HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
 import {environment} from "../../environments/environment";
@@ -21,8 +21,8 @@ export class MusicComponent implements OnInit {
   options: ChartOptions = {
     scales:{
       y:{
-        max : 40,
-        min: -2
+        min: 0,
+        max: 0.2
       },
       x: {
         display: false
