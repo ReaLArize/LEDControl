@@ -22,7 +22,7 @@ export class MusicComponent implements OnInit {
     scales:{
       y:{
         min: 0,
-        max: 0.2
+        max: 255
       },
       x: {
         display: false
