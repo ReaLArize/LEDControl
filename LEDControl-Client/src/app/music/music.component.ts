@@ -13,7 +13,7 @@ import {environment} from "../../environments/environment";
 })
 export class MusicComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-  dataLength = 512;
+  dataLength = 256;
   data: ChartDataset[] = [
     {data: [], label:"Music", pointRadius: 0}
   ];

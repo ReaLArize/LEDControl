@@ -13,33 +13,42 @@ using LEDControl.Services;
 using MathNet.Numerics.IntegralTransforms;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PulseAudioWrapper;
 
 namespace LEDControl.Programs;
 
 public unsafe class MusicProgram : IProgram
 {
-    private const nuint ChunkSize = 2048;
-    private const int OldCount = 100;
-    
     private DeviceService _deviceService;
     private Task _workTask;
     private readonly CancellationTokenSource _tokenSource = new();
     private pa_simple* _apiRead;
     private IHubContext<MusicHub> _hubContext;
     private UdpClient _udpClient;
-    
+    private ILogger<MusicProgram> _logger;
+
+    private const nuint ChunkSize = 2048;
+    private const int EqSize = 16;
     private readonly byte[] _buffer = new byte[ChunkSize];
-    private int _processCount;
-    private readonly double[][] _oldFfft = new double[OldCount][];
+    
+    private int _oldFftCount;
+    private readonly double[][] _oldFft = new double[100][];
+    
+    private int _oldEqCount;
+    private readonly double[][] _oldEq = new double[75][];
 
     public void Init(IServiceProvider serviceProvider)
     {
-        for (var i = 0; i < _oldFfft.Length; i++)
-            _oldFfft[i] = new double[ChunkSize / 4];
+        for (var i = 0; i < _oldFft.Length; i++)
+            _oldFft[i] = new double[ChunkSize / 4];
+        for (int i = 0; i < _oldEq.Length; i++)
+            _oldEq[i] = new double[EqSize];
+        
         _udpClient = new UdpClient();
         _deviceService = serviceProvider.GetRequiredService<DeviceService>();
         _hubContext = serviceProvider.GetRequiredService<IHubContext<MusicHub>>();
+        _logger = serviceProvider.GetRequiredService<ILogger<MusicProgram>>();
     }
 
     private void ReadMusic(CancellationToken token)
@@ -76,12 +85,73 @@ public unsafe class MusicProgram : IProgram
             var fftData = rawData.Select(p => new Complex(p, 0)).ToArray();
             
             Fourier.Forward(fftData, FourierOptions.Matlab);
-            Process(fftData.Take(fftData.Length / 2).Select( x => x.Magnitude).ToArray());
+            var data = fftData.Take(fftData.Length / 2).Select(x => x.Magnitude).ToArray();
+            try
+            {
+                var lightTask = Task.Run(() => Process(data));
+                var eqTask = Task.Run(() => ProcessEq(data));
+                Task.WaitAll(lightTask, eqTask);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error Music Processing");   
+            }
+
             Thread.Sleep(10);
 
-            _processCount++;
-            if (_processCount == OldCount)
-                _processCount = 0;
+            _oldFftCount++;
+            _oldEqCount++;
+            if (_oldFftCount == _oldFft.Length)
+                _oldFftCount = 0;
+            if (_oldEqCount == _oldEq.Length)
+                _oldEqCount = 0;
+        }
+    }
+
+    private void ProcessEq(double[] fftData)
+    {
+        if (fftData.Average() > 0.05)
+        {
+            foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Pictures))
+                device.LightRequest.FullColor(Color.Black);
+            
+            var chunks = fftData.Chunk(fftData.Length / EqSize).ToArray();
+            for (var i = 0; i < chunks.Length; i++)
+            {
+                double maxOld = 0;
+                for (var j = 0; j < _oldEq.Length; j++)
+                {
+                    if (_oldEq[j][i] > maxOld)
+                        maxOld = _oldEq[j][i];
+                }
+
+                var avg = chunks[i].Average();
+                var perc = avg / maxOld;
+                if (perc > 1)
+                    perc = 1;
+                else if (perc < 0 || avg < 0.05)
+                    perc = 0;
+                
+
+                foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Pictures))
+                    device.LightRequest.SetEq(i, Convert.ToInt32(perc * 16));
+                _oldEq[_oldEqCount][i] = chunks[i].Average() * 1.5;
+            }
+            
+            foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Pictures))
+            {
+                var data = device.LightRequest.ToByteArray();
+                _udpClient.Send(data, data.Length, device.Hostname, device.Port);
+            }
+        }
+        else
+        {
+            foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Pictures))
+            {
+                device.LightRequest.Off();
+                var data = device.LightRequest.ToByteArray();
+                _udpClient.Send(data, data.Length, device.Hostname, device.Port);
+            }
         }
     }
     
@@ -94,23 +164,23 @@ public unsafe class MusicProgram : IProgram
             for (var i = 0; i < averages.Length; i++)
             {
                 double temp = 0;
-                for (var j = 0; j < _oldFfft.Length; j++)
-                    temp += _oldFfft[j][i];
-                averages[i] = temp / _oldFfft.Length;
+                for (var j = 0; j < _oldFft.Length; j++)
+                    temp += _oldFft[j][i];
+                averages[i] = temp / _oldFft.Length;
             }
+            
             for (int i = 0; i < averages.Length; i++)
-                differences[i] = fftData[i] / averages[i];
+                differences[i] = fftData[i] / (averages[i] * 2);
 
             var colors = new Color[295];
-            var max = differences.Max();
             for (int i = 0; i < colors.Length; i++)
             {
-                var proc = differences[i] / max;
-                if (proc < 0)
-                    proc = 0;
-                else if (proc > byte.MaxValue)
-                    proc = byte.MaxValue;
-                colors[i] = Color.FromArgb(0, 0, (int)proc * byte.MaxValue);
+                var percentage = differences[i];
+                if (percentage < 0)
+                    percentage = 0;
+                else if (percentage > 1 || differences[i] < 0.05)
+                    percentage = 1;
+                colors[i] = Color.FromArgb(0, 0, Convert.ToInt32(percentage * byte.MaxValue));
             }
 
             foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light))
@@ -125,8 +195,17 @@ public unsafe class MusicProgram : IProgram
             _hubContext.Clients.All.SendAsync("UpdateChart", colors.Select(p => (int)p.B).ToList()).Wait();
         }
         else
+        {
+            foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Light))
+            {
+                device.LightRequest.Off();
+                var data = device.LightRequest.ToByteArray();
+                _udpClient.Send(data, data.Length, device.Hostname, device.Port);
+            }
             _hubContext.Clients.All.SendAsync("UpdateChart", new double[fftData.Length]);
-        _oldFfft[_processCount] = fftData;
+        }
+
+        _oldFft[_oldFftCount] = fftData;
     }
 
     public void Run()

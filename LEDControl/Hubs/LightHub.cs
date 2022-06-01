@@ -22,12 +22,7 @@ public class LightHub : Hub
 
     public override async Task OnConnectedAsync()
     {
-        var color = _settingsService.LightProgramSettings.Color;
-        var light = new Light
-        {
-            HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
-            RainbowOn = _programService.CurrentProgram is RainbowProgram
-        };
+        var light = GetLightDto();
         await Clients.Caller.SendAsync("UpdateLight", light);
         await base.OnConnectedAsync();
     }
@@ -64,15 +59,20 @@ public class LightHub : Hub
         await UpdateLight(true);
     }
 
-    private async Task UpdateLight(bool updateAll = false)
+    private Light GetLightDto()
     {
         var color = _settingsService.LightProgramSettings.Color;
-        var light = new Light
+        return new Light
         {
             HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
             RainbowOn = _programService.CurrentProgram is RainbowProgram,
             MusicOn = _programService.CurrentProgram is MusicProgram
         };
+    }
+
+    private async Task UpdateLight(bool updateAll = false)
+    {
+        var light = GetLightDto();
         if (updateAll)
             await Clients.All.SendAsync("UpdateLight", light);
         else
