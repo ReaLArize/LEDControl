@@ -8,6 +8,7 @@ public class SettingsService
     private readonly object _lock;
     private RainbowProgramSettings _rainbowProgramSettings;
     private LightProgramSettings _lightProgramSettings;
+    private MusicProgramSettings _musicProgramSettings;
 
     public delegate void SettingsChangedEventHandler(object sender);
     public event SettingsChangedEventHandler SettingsChangedEvent;
@@ -44,6 +45,22 @@ public class SettingsService
             }
         }
     }
+    public MusicProgramSettings MusicProgramSettings
+    {
+        get
+        {
+            lock (_lock)
+                return _musicProgramSettings;
+        }
+        set
+        {
+            lock (_lock)
+            {
+                _musicProgramSettings = value;
+                SettingsChangedEvent?.Invoke(this);
+            }
+        }
+    }
     
     public SettingsService()
     {
@@ -53,6 +70,11 @@ public class SettingsService
             Color = Color.Black
         };
         RainbowProgramSettings = new RainbowProgramSettings();
+        MusicProgramSettings = new MusicProgramSettings()
+        {
+            MusicMode = MusicMode.Rainbow,
+            CalculateMode = CalculateMode.Average
+        };
     }
 
     public void RaiseSettingsChangedEvent()

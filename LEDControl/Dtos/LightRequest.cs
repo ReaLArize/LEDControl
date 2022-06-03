@@ -64,7 +64,7 @@ public class LightRequest
                 value = 0;
         }
 
-        if (i % 2 == 0)
+        if (i % 2 == 1)
         {
             var matrixStart = i * 16;
             for (var j = 0; j < value; j++)
@@ -83,14 +83,14 @@ public class LightRequest
     private Color GetEqColor(int value)
     {
         if (value < 3)
-            return Color.FromArgb(0, 0, 2);
+            return Color.FromArgb(0, 0, 4);
         if (value < 6)
-            return Color.FromArgb(0, 1, 1);
+            return Color.FromArgb(0, 2, 2);
         if(value < 10)
-            return Color.FromArgb(0, 2, 0);
+            return Color.FromArgb(0, 4, 0);
         if (value < 13)
-            return Color.FromArgb(1, 1, 0);
-        return Color.FromArgb(2, 0, 0);
+            return Color.FromArgb(2, 2, 0);
+        return Color.FromArgb(4, 0, 0);
     }
 }
 

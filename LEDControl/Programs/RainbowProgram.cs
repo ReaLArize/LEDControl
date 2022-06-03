@@ -51,7 +51,7 @@ public class RainbowProgram : IProgram
                     {
                         if (token.IsCancellationRequested)
                             return;
-                        device.LightRequest.Colors[ii] = getWheelColor(((ii * 256 / device.NumLeds) + i) % 256);
+                        device.LightRequest.Colors[ii] = GetWheelColor(((ii * 256 / device.NumLeds) + i) % 256);
                     }
 
                     var data = device.LightRequest.ToByteArray();
@@ -62,7 +62,7 @@ public class RainbowProgram : IProgram
         }
     }
 
-    private Color getWheelColor(int wheelpos)
+    private Color GetWheelColor(int wheelpos)
     {
         if (wheelpos < 85)
         {
