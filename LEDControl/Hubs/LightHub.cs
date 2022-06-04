@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using LEDControl.Dtos;
 using LEDControl.Programs;
+using LEDControl.Programs.Settings;
 using LEDControl.Services;
 using Microsoft.AspNetCore.SignalR;
 
@@ -52,6 +53,13 @@ public class LightHub : Hub
         await UpdateLight(true);
     }
     
+    public async Task RainbowEq()
+    {
+        _programService.Stop();
+        _programService.Start(new RainbowEqProgram());
+        await UpdateLight(true);
+    }
+    
     public async Task Music()
     {
         _programService.Stop();
@@ -66,7 +74,8 @@ public class LightHub : Hub
         {
             HexString = $"#{color.R:X2}{color.G:X2}{color.B:X2}",
             RainbowOn = _programService.CurrentProgram is RainbowProgram,
-            MusicOn = _programService.CurrentProgram is MusicProgram
+            MusicOn = _programService.CurrentProgram is MusicProgram,
+            RainbowEqOn = _programService.CurrentProgram is RainbowEqProgram
         };
     }
 

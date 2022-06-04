@@ -135,18 +135,18 @@ public unsafe class MusicProgram : IProgram
     }
     private void ProcessEq(double[] fftData)
     {
-        if (fftData.Average() > 0.05)
+        if (fftData.Average() > 0.005)
         {
             foreach (var device in _deviceService.Devices.Where(p => p.Mode == DeviceMode.Pictures))
                 device.LightRequest.FullColor(Color.Black);
             
             var chunks = new double[16][];
-            chunks[0] = fftData[0..4];
-            chunks[1] = fftData[5..9];
-            chunks[2] = fftData[10..14];
-            chunks[3] = fftData[15..30];
-            chunks[4] = fftData[31..46];
-            chunks[5] = fftData[47..62];
+            chunks[0] = fftData[0..3];
+            chunks[1] = fftData[4..7];
+            chunks[2] = fftData[8..12];
+            chunks[3] = fftData[13..28];
+            chunks[4] = fftData[29..44];
+            chunks[5] = fftData[45..62];
             chunks[6] = fftData[63..78];
             chunks[7] = fftData[79..94];
             chunks[8] = fftData[95..110];

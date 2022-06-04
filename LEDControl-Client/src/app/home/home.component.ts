@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   private colorChanging = false;
   isRainbow: boolean;
   isMusic: boolean;
+  isRainbowEq: boolean;
 
   constructor(private ngZone: NgZone, private notificationService: NotificationService,
               private eventService: EventService) {
@@ -38,6 +39,7 @@ export class HomeComponent implements OnInit {
       this.colorPicker.color.hexString = light.hexString;
       this.isRainbow = light.rainbowOn;
       this.isMusic = light.musicOn;
+      this.isRainbowEq = light.rainbowEqOn;
       this.colorChanging = false;
     });
     await this.hubConnection.start()
@@ -84,6 +86,10 @@ export class HomeComponent implements OnInit {
 
   doMusic(){
     this.hubConnection.send("Music");
+  }
+
+  doRainbowEq(){
+    this.hubConnection.send("RainbowEq");
   }
 
 }
